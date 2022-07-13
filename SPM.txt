@@ -1,0 +1,9 @@
+Speedmon_INV_MP_FAULT1_OCPL
+Speedmon_INV_AVRRDY
+Speedmon_ND2_MP_FAULT1_OCPL
+Speedmon_ND2_AVRRDY
+Speedmon_NR2_MP_FAULT1_OCPL
+Speedmon_NR2_AVRRDY
+Speedmon_INV_MP_IMON
+Speedmon_ND2_MP_IMON
+Speedmon_NR2_MP_IMON

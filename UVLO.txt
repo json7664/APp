@@ -1,0 +1,13 @@
+UVLO_falling
+UVLO_rising
+UVLO_hysteresis
+UVLO_falling_flag
+UVLO_falling_vthreshold
+UVLO_rising_flag
+UVLO_rising_vthreshold
+UVLO_hyst
+UVLO_falling_flag
+UVLO_falling_vthreshold
+UVLO_rising_flag
+UVLO_rising_vthreshold
+UVLO_hyst

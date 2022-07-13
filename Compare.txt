@@ -1,0 +1,407 @@
+Sub Compare()
+Dim filename As String
+filename = "Collected_data.xlsm"
+
+'variables for 360 doc...
+Dim testName As String
+
+Dim ParaRow As Integer
+Dim TNameCol As Integer
+Dim TNumCol As Integer
+Dim ScaleCol As Integer
+Dim UnitCol As Integer
+Dim FTLoCol As Integer
+Dim FTHiCol As Integer
+
+Dim QA1LoCol As Integer
+Dim QA1HiCol As Integer
+
+Dim QA2LoCol As Integer
+Dim QA2HiCol As Integer
+
+Dim QA3LoCol As Integer
+Dim QA3HiCol As Integer
+
+'variables for LimitSheet...
+Dim testNameLim As String
+
+Dim ParaRowLim As Integer
+Dim TNameColLim As Integer
+Dim TNumColLim As Integer
+Dim ScaleColLim As Integer
+Dim UnitColLim As Integer
+Dim FTLoColLim As Integer
+Dim FTHiColLim As Integer
+
+Dim QA1LoColLim As Integer
+Dim QA1HiColLim As Integer
+
+Dim QA2LoColLim As Integer
+Dim QA2HiColLim As Integer
+
+Dim QA3LoColLim As Integer
+Dim QA3HiColLim As Integer
+
+Dim FlagTNum As Boolean
+Dim FlagScale As Boolean
+Dim FlagUnit As Boolean
+FlagTNum = False
+FlagScale = False
+FlagUnit = False
+
+Dim FlagTNum1 As Boolean
+Dim FlagScale1 As Boolean
+Dim FlagUnit1 As Boolean
+
+FlagTNum1 = False
+FlagScale1 = False
+FlagUnit1 = False
+
+ThisWorkbook.Activate
+                    Sheets("Dump").Select
+                    Range((Cells(1, 1)), Cells(10000, 100)).Clear
+                    Sheets("Master_Sheet").Select
+                    Range((Cells(1, 1)), Cells(10000, 100)).Copy
+                    Sheets("Dump").Select
+                    Range((Cells(1, 1)), Cells(10000, 100)).PasteSpecial xlPasteAll, xlPasteSpecialOperationNone, , False
+ 
+
+
+Dim ws As Worksheet
+    
+    For Each ws In ThisWorkbook.Worksheets
+        If (ws.Name <> "Master_Sheet" And ws.Name <> "Dump") Then
+            Sheets(ws.Name).Activate
+    For RStep = 1 To 7300
+        For CStep = 1 To 10
+    'look for the row that has the test names.
+            If (StrComp(Cells(RStep, CStep), "TESTNAME", 1) = 0) Then
+                ParaRow = RStep  ' Save row with parameter names
+                TNameCol = CStep ' Save Test name column.
+                Exit For
+            End If
+        Next CStep
+    Next RStep
+'******************************************************************************************************************
+
+'ParaRow = 1
+    'search for the rest of the parameter columns in the 360 doc. Might need to do this for limit sheet as well.
+    For CStep = 1 To 100
+        If (StrComp(Cells(ParaRow, CStep), "TestNum", 1) = 0) Then
+            If (FlagTNum1 = False) Then
+                TNumCol = CStep ' Save Test name column.
+                FlagTNum1 = True
+            End If
+        End If
+        If (StrComp(Cells(ParaRow, CStep), "Scale", 1) = 0) Then
+            If (FlagScale1 = False) Then
+                ScaleCol = CStep ' Save Test name column.
+                FlagScale1 = True
+            End If
+        End If
+        If (StrComp(Cells(ParaRow, CStep), "Unit", 1) = 0) Then
+            If (FlagUnit1 = False) Then
+                UnitCol = CStep ' Save Test name column.
+                FlagUnit1 = True
+            End If
+        End If
+
+        If (StrComp(Cells(ParaRow, CStep), " FT LoLim", 1) = 0) Then
+            FTLoCol = CStep ' Save Test name column.
+            'Exit For
+        End If
+        If (StrComp(Cells(ParaRow, CStep), "FT HiLim", 1) = 0) Then
+            FTHiCol = CStep ' Save Test name column.
+            'Exit For
+        End If
+        If (StrComp(Cells(ParaRow, CStep), "QA1 LoLim", 1) = 0) Then
+            QA1LoCol = CStep ' Save Test name column.
+            'Exit For
+        End If
+        If (StrComp(Cells(ParaRow, CStep), "QA1 HiLim", 1) = 0) Then
+            QA1HiCol = CStep ' Save Test name column.
+            'Exit For
+        End If
+        If (StrComp(Cells(ParaRow, CStep), "QA2 LoLim", 1) = 0) Then
+            QA2LoCol = CStep ' Save Test name column.
+            'Exit For
+        End If
+        If (StrComp(Cells(ParaRow, CStep), "QA2 HiLim", 1) = 0) Then
+            QA2HiCol = CStep ' Save Test name column.
+            'Exit For
+        End If
+        If (StrComp(Cells(ParaRow, CStep), "QA3 LoLim", 1) = 0) Then
+            QA3LoCol = CStep ' Save Test name column.
+            'Exit For
+        End If
+        If (StrComp(Cells(ParaRow, CStep), "QA3 HiLim", 1) = 0) Then
+            QA3HiCol = CStep ' Save Test name column.
+            'Exit For
+        End If
+    Next CStep
+    
+'*********************************************************************************************************************************************
+'    For RStep = 1 To 3300
+'    'look for the row that has the test names.
+'        If (StrComp(Cells(RStep, TNameCol), "TESTNAME", 1) = 0) Then
+'        'once the test name row has been found, look for the first cell that is empty in the row. This should be the end of the test names.
+'            For CStep = RStep To 3300
+'                If (IsEmpty(Cells(CStep, TNameCol))) Then
+'                    Range((Cells(RStep, TNumCol)), Cells(CStep, QA3HiCol)).Select
+'                    Selection.Copy
+'
+'                    'copy the row of test names into the "dump tab and transpose the row.
+'                    Workbooks(filename).Activate
+'                    Sheets("Dump360").Select
+'                    Range((Cells(2, TNumCol)), Cells(1, TNumCol)).PasteSpecial xlPasteAll, xlPasteSpecialOperationNone, , False
+'
+'                    'Set a flag so the code will exit the outside nested loop.
+'                    FFlag = True
+'
+'                    'exit the for loop
+'                    Exit For
+'                End If
+'            Next CStep
+'
+'            If (FFlag = True) Then
+'                Exit For
+'            End If
+'        End If
+'    Next RStep
+    
+'*********************************************************************************************************************************************
+'Find columns from Limits Sheet.
+'*********************************************************************************************************************************************
+   ThisWorkbook.Activate
+    Sheets("Dump").Activate
+    For RStep = 1 To 20
+        For CStep = 1 To 10
+    'look for the row that has the test names.
+            If (StrComp(Cells(RStep, CStep), "TESTNAME", 1) = 0) Then
+                ParaRow = RStep  ' Save row with parameter names
+                TNameColLim = CStep ' Save Test name column.
+                Exit For
+            End If
+        Next CStep
+    Next RStep
+
+    'search for the rest of the parameter columns in the 360 doc. Might need to do this for limit sheet as well.
+    For CStep = 1 To 100
+        If (StrComp(Cells(ParaRow, CStep), "TestNum", 1) = 0) Then
+            If (FlagTNum = False) Then
+                TNumColLim = CStep ' Save Test name column.
+            End If
+        End If
+        If FlagScale = False Then
+            If (StrComp(Cells(ParaRow, CStep), "Scale", 1) = 0) Then
+                ScaleColLim = CStep ' Save Test name column.
+                FlagScale = True
+            End If
+        End If
+        If FlagUnit = False Then
+            If (StrComp(Cells(ParaRow, CStep), "Unit", 1) = 0) Then
+                UnitColLim = CStep ' Save Test name column.
+                FlagUnit = True
+            End If
+        End If
+        If (StrComp(Cells(ParaRow, CStep), " FT LoLim", 1) = 0) Then
+            FTLoColLim = CStep ' Save Test name column.
+            'Exit For
+        End If
+        If (StrComp(Cells(ParaRow, CStep), "FT HiLim", 1) = 0) Then
+            FTHiColLim = CStep ' Save Test name column.
+            'Exit For
+        End If
+        If (StrComp(Cells(ParaRow, CStep), "QA1 LoLim", 1) = 0) Then
+            QA1LoColLim = CStep ' Save Test name column.
+            'Exit For
+        End If
+        If (StrComp(Cells(ParaRow, CStep), "QA1 HiLim", 1) = 0) Then
+            QA1HiColLim = CStep ' Save Test name column.
+            'Exit For
+        End If
+        If (StrComp(Cells(ParaRow, CStep), "QA2 LoLim", 1) = 0) Then
+            QA2LoColLim = CStep ' Save Test name column.
+            'Exit For
+        End If
+        If (StrComp(Cells(ParaRow, CStep), "QA2 HiLim", 1) = 0) Then
+            QA2HiColLim = CStep ' Save Test name column.
+            'Exit For
+        End If
+        If (StrComp(Cells(ParaRow, CStep), "QA3 LoLim", 1) = 0) Then
+            QA3LoColLim = CStep ' Save Test name column.
+            'Exit For
+        End If
+        If (StrComp(Cells(ParaRow, CStep), "QA3 HiLim", 1) = 0) Then
+            QA3HiColLim = CStep ' Save Test name column.
+            'Exit For
+        End If
+    Next CStep
+'*********************************************************************************************************************************************
+'*********************************************************************************************************************************************
+    Dim tempTestNum As String
+    Dim tempTestName As String
+    Dim tempScale As String
+    Dim tempUnit As String
+    Dim tempFTLo As String
+    Dim tempFTHi As String
+    Dim tempQA1Lo As String
+    Dim tempQA1Hi As String
+    Dim tempQA2Lo As String
+    Dim tempQA2Hi As String
+    Dim tempQA3Lo As String
+    Dim tempQA3Hi As String
+    
+'*************************'Need a nested loop. 1 for dump tab and 1 for limits sheet. *************************************
+    For Dump360Step = 1 To 3300
+        Sheets(ws.Name).Select
+        If (Dump360Step > 4) Then
+            If (IsEmpty(Cells(Dump360Step, TNameCol))) Then
+                'exit the for loop
+                Exit For
+            End If
+        End If
+    'get a copy of each parameter from 360 Doc to compare to Limit sheet.
+        'get a copy of 360 limits
+        tempTestName = Cells(Dump360Step, TNameCol).Value
+        tempScale = Cells(Dump360Step, ScaleCol).Value
+        tempUnit = Cells(Dump360Step, UnitCol).Value
+        tempFTLo = Cells(Dump360Step, FTLoCol).Value
+        tempFTHi = Cells(Dump360Step, FTHiCol).Value
+        tempQA1Lo = Cells(Dump360Step, QA1LoCol).Value
+        tempQA1Hi = Cells(Dump360Step, QA1HiCol).Value
+        tempQA2Lo = Cells(Dump360Step, QA2LoCol).Value
+        tempQA2Hi = Cells(Dump360Step, QA2HiCol).Value
+        tempQA3Lo = Cells(Dump360Step, QA3LoCol).Value
+        tempQA3Hi = Cells(Dump360Step, QA3HiCol).Value
+
+        Sheets("Dump").Select
+        For LimitDumpStep = 1 To 3300
+            If (LimitDumpStep > 4) Then
+                If (IsEmpty(Cells(LimitDumpStep, TNameColLim))) Then
+                    'exit the for loop at the end of limits.
+                    Exit For
+                End If
+            End If
+        
+        'If test names match the LimitsDump cell is highlighted in green.
+            If (StrComp(Cells(LimitDumpStep, TNameColLim), tempTestName, 1) = 0) Then
+                Range((Cells(LimitDumpStep, TNameColLim)), Cells(LimitDumpStep, TNameColLim)).Select
+                Selection.Interior.ColorIndex = 4
+                
+                'put limits from 360 doc into limit sheet dump
+               ' Cells(LimitDumpStep, ScaleColLim).Value = tempScale
+                'Cells(LimitDumpStep, UnitColLim).Value = tempUnit
+                
+                
+                If (Cells(LimitDumpStep, ScaleColLim).Value = tempScale) Then
+                    Range((Cells(LimitDumpStep, ScaleColLim)), Cells(LimitDumpStep, ScaleColLim)).Select
+                    Selection.Interior.ColorIndex = 4
+                Else
+                    Range((Cells(LimitDumpStep, ScaleColLim)), Cells(LimitDumpStep, ScaleColLim)).Select
+                    Selection.Interior.ColorIndex = 6
+                End If
+                    Cells(LimitDumpStep, ScaleColLim).Value = tempScale
+                
+                
+
+                If (Cells(LimitDumpStep, UnitColLim).Value = tempUnit) Then
+                    Range((Cells(LimitDumpStep, UnitColLim)), Cells(LimitDumpStep, UnitColLim)).Select
+                    Selection.Interior.ColorIndex = 4
+                Else
+                    Range((Cells(LimitDumpStep, UnitColLim)), Cells(LimitDumpStep, UnitColLim)).Select
+                    Selection.Interior.ColorIndex = 6
+                End If
+                     Cells(LimitDumpStep, UnitColLim).Value = tempUnit
+
+                
+                
+                'Check if the limit has changed and highlight accordingly
+                If (Cells(LimitDumpStep, FTLoColLim).Value = tempFTLo) Then
+                    Range((Cells(LimitDumpStep, FTLoColLim)), Cells(LimitDumpStep, FTLoColLim)).Select
+                    Selection.Interior.ColorIndex = 4
+                Else
+                    Range((Cells(LimitDumpStep, FTLoColLim)), Cells(LimitDumpStep, FTLoColLim)).Select
+                    Selection.Interior.ColorIndex = 6
+                End If
+                    Cells(LimitDumpStep, FTLoColLim).Value = tempFTLo
+                    
+                'Check if the limit has changed and highlight accordingly
+                If (Cells(LimitDumpStep, FTHiColLim).Value = tempFTHi) Then
+                    Range((Cells(LimitDumpStep, FTHiColLim)), Cells(LimitDumpStep, FTHiColLim)).Select
+                    Selection.Interior.ColorIndex = 4
+                Else
+                    Range((Cells(LimitDumpStep, FTHiColLim)), Cells(LimitDumpStep, FTHiColLim)).Select
+                    Selection.Interior.ColorIndex = 6
+                End If
+                Cells(LimitDumpStep, FTHiColLim).Value = tempFTHi
+                
+                If (Cells(LimitDumpStep, QA1LoColLim).Value = tempQA1Lo) Then
+                    Range((Cells(LimitDumpStep, QA1LoColLim)), Cells(LimitDumpStep, QA1LoColLim)).Select
+                    Selection.Interior.ColorIndex = 4
+                Else
+                    Range((Cells(LimitDumpStep, QA1LoColLim)), Cells(LimitDumpStep, QA1LoColLim)).Select
+                    Selection.Interior.ColorIndex = 6
+                End If
+                Cells(LimitDumpStep, QA1LoColLim).Value = tempQA1Lo
+                
+                If (Cells(LimitDumpStep, QA1HiColLim).Value = tempQA1Hi) Then
+                    Range((Cells(LimitDumpStep, QA1HiColLim)), Cells(LimitDumpStep, QA1HiColLim)).Select
+                    Selection.Interior.ColorIndex = 4
+                Else
+                    Range((Cells(LimitDumpStep, QA1HiColLim)), Cells(LimitDumpStep, QA1HiColLim)).Select
+                    Selection.Interior.ColorIndex = 6
+                End If
+                Cells(LimitDumpStep, QA1HiColLim).Value = tempQA1Hi
+                
+                Cells(LimitDumpStep, QA1HiColLim + 1).Value = tempScale
+                Cells(LimitDumpStep, QA1HiColLim + 2).Value = tempUnit
+                
+                If (Cells(LimitDumpStep, QA2LoColLim).Value = tempQA2Lo) Then
+                    Range((Cells(LimitDumpStep, QA2LoColLim)), Cells(LimitDumpStep, QA2LoColLim)).Select
+                    Selection.Interior.ColorIndex = 4
+                Else
+                    Range((Cells(LimitDumpStep, QA2LoColLim)), Cells(LimitDumpStep, QA2LoColLim)).Select
+                    Selection.Interior.ColorIndex = 6
+                End If
+                Cells(LimitDumpStep, QA2LoColLim).Value = tempQA2Lo
+                
+                If (Cells(LimitDumpStep, QA2HiColLim).Value = tempQA2Hi) Then
+                    Range((Cells(LimitDumpStep, QA2HiColLim)), Cells(LimitDumpStep, QA2HiColLim)).Select
+                    Selection.Interior.ColorIndex = 4
+                Else
+                    Range((Cells(LimitDumpStep, QA2HiColLim)), Cells(LimitDumpStep, QA2HiColLim)).Select
+                    Selection.Interior.ColorIndex = 6
+                End If
+                Cells(LimitDumpStep, QA2HiColLim).Value = tempQA2Hi
+                
+                Cells(LimitDumpStep, QA2HiColLim + 1).Value = tempScale
+                Cells(LimitDumpStep, QA2HiColLim + 2).Value = tempUnit
+                
+                If (Cells(LimitDumpStep, QA3LoColLim).Value = tempQA3Lo) Then
+                    Range((Cells(LimitDumpStep, QA3LoColLim)), Cells(LimitDumpStep, QA3LoColLim)).Select
+                    Selection.Interior.ColorIndex = 4
+                Else
+                    Range((Cells(LimitDumpStep, QA3LoColLim)), Cells(LimitDumpStep, QA3LoColLim)).Select
+                    Selection.Interior.ColorIndex = 6
+                End If
+                Cells(LimitDumpStep, QA3LoColLim).Value = tempQA3Lo
+                
+                If (Cells(LimitDumpStep, QA3HiColLim).Value = tempQA3Hi) Then
+                    Range((Cells(LimitDumpStep, QA3HiColLim)), Cells(LimitDumpStep, QA3HiColLim)).Select
+                    Selection.Interior.ColorIndex = 4
+                Else
+                    Range((Cells(LimitDumpStep, QA3HiColLim)), Cells(LimitDumpStep, QA3HiColLim)).Select
+                    Selection.Interior.ColorIndex = 6
+                End If
+                Cells(LimitDumpStep, QA3HiColLim).Value = tempQA3Hi
+                
+                Cells(LimitDumpStep, QA3HiColLim + 1).Value = tempScale
+                Cells(LimitDumpStep, QA3HiColLim + 2).Value = tempUnit
+            End If
+        Next LimitDumpStep
+    Next Dump360Step
+
+        End If
+    Next ws
+End Sub
